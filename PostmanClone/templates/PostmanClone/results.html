@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+</head>
+<body>
+    Base URL: {{baseURL}}<br>
+    headers: {{headers}}<br>
+    HTTP Method: {{httpMethod}}<br>
+    testObject: {{testObject}}<br>
+    API response: {{api_response}}<br><br>
+    Python Code: <br> {{pythonCode|linebreaks}}<br><br>
+</body>
+</html>
+
+<form action = http://127.0.0.1:8000/postman/submit  method="post">
+    {% csrf_token %}
+    base url:<input type="text" name="baseURL" id="baseURL"><br>
+    headers:<br>
+    <input type="text" name="headersa1" id="headersa1">
+    <input type="text" name="headersb1" id="headersb1"><br>
+    <input type="text" name="headersa2" id="headersa2">
+    <input type="text" name="headersb2" id="headersb2"><br>
+    <input type="text" name="headersa3" id="headersa3">
+    <input type="text" name="headersb3" id="headersb3"><br>
+    HTTP Method:
+    <select name="httpMethod">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+    </select><br>
+    <input type="submit" value="Submit">
+</form>
