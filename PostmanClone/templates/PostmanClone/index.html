@@ -5,6 +5,15 @@
     <title>Postman Clone</title>
 </head>
 <body>
+    <h1>index page</h1>
+    {% if user.is_authenticated %}
+    <h2>your name is: {{ user.username }}</h2>
+    {% else %}
+    <h2>you're not logged in buddo</h2>
+    <p><a href="/accounts/login">Log in here!</a></p>
+    <p><a href="postman/register">Or register here!</a></p>
+    {% endif %}
+
 
 <form action = http://127.0.0.1:8000/postman/submit  method="post">
     {% csrf_token %}

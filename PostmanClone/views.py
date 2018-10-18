@@ -1,9 +1,11 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import test, apiCall
 from django.urls import reverse
 import requests
 from .forms import ApiForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 def index(request):
@@ -39,6 +41,24 @@ def submit(request):
         new_api_call.base_url, new_api_call.headersa1, new_api_call.headersb1, new_api_call.headersa2, new_api_call.headersb2, new_api_call.headersa3, new_api_call.headersb3, new_api_call.httpMethod = request.POST['baseURL'], request.POST['headersa1'],request.POST['headersb1'], request.POST['headersa2'],request.POST['headersb2'], request.POST['headersa3'], request.POST['headersb3'], request.POST['httpMethod']
         new_api_call.save()
         return render(request, 'PostmanClone/index.html')
+
+def myregister(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username = username, password = password)
+            login(request, user)
+            redirect('index')
+    else:
+        form = UserCreationForm()
+
+    context = {'form': form}
+    return render(request, 'registration/register.html',context)
+
 
 #method to be used in the submit view.  does this belong in another file by convention?
 def generatePythonCode(baseURL, httpMethod, headers):
