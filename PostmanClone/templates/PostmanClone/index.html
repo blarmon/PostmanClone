@@ -19,9 +19,21 @@
     HTTP Method:
     <select name="httpMethod">
         <option value="GET">GET</option>
-        <option value="POST">POST</option>
+        <option value="POST">POSTbutdon'tusethisrightnow</option>
     </select><br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Submit" name="submitButton">
+    <input type="submit" value="Save Call" name="saveButton">
 </form>
+<br><br>
+
+{% for call in saved_calls  %}
+  <p>{{ call }}</p>
+{% endfor %}
+
+<!--<form action = http://127.0.0.1:8000/postman/submit  method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>-->
 </body>
 </html>
