@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.utils.timezone import now
+from django.contrib.auth.models import User
 
 # Create your models here.
 class test(models.Model):
@@ -11,6 +12,7 @@ class test(models.Model):
         return self.testing_text
 
 class apiCall(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     base_url = models.TextField()
     headersa1 = models.TextField()

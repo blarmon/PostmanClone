@@ -8,14 +8,15 @@
     <h1>index page</h1>
     {% if user.is_authenticated %}
     <h2>your name is: {{ user.username }}</h2>
+    <p><a href="/accounts/logout">Log out</a></p>
     {% else %}
     <h2>you're not logged in buddo</h2>
     <p><a href="/accounts/login">Log in here!</a></p>
-    <p><a href="postman/register">Or register here!</a></p>
+    <p><a href="{% url 'register' %}">Or register here!</a></p>
     {% endif %}
 
 
-<form action = http://127.0.0.1:8000/postman/submit  method="post">
+<form action = http://127.0.0.1:8000/submit  method="post">
     {% csrf_token %}
     base url:<input type="text" name="baseURL" id="baseURL"><br>
     headers:<br>
@@ -31,13 +32,19 @@
         <option value="POST">POSTbutdon'tusethisrightnow</option>
     </select><br>
     <input type="submit" value="Submit" name="submitButton">
-    <input type="submit" value="Save Call" name="saveButton">
+    {% if user.is_authenticated %}
+        Name for API call:
+        <input type="text" name="api_call_name" id="api_call_name">
+        <input type="submit" value="Save Call" name="saveButton">
+    {% endif %}
 </form>
 <br><br>
 
-{% for call in saved_calls  %}
-  <p>{{ call }}</p>
-{% endfor %}
+{% if user.is_authenticated %}
+    {% for call in saved_calls  %}
+      <p>{{ call }}</p>
+    {% endfor %}
+{% endif %}
 
 <!--<form action = http://127.0.0.1:8000/postman/submit  method="post">
     {% csrf_token %}

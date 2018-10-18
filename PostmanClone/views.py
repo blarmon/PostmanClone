@@ -10,12 +10,16 @@ from django.contrib.auth import authenticate, login
 # Create your views here.
 def index(request):
     #form = ApiForm()
-    saved_calls = [i for i in apiCall.objects.all()]
+    current_user = request.user
+    print(current_user)
+    print(current_user.id)
+    saved_calls = [i for i in apiCall.objects.filter(user = current_user.id)]
     context = {'testStuff': 'hey WORLD','saved_calls': saved_calls,}# 'form': form}
     return render(request, 'PostmanClone/index.html', context)
 
 def submit(request):
     if 'submitButton' in request.POST:
+        print("submit button")
         myTest = get_object_or_404(test, pk=1)
         baseURL = request.POST['baseURL']
         httpMethod = request.POST['httpMethod']
@@ -34,13 +38,15 @@ def submit(request):
         ##TODO: THIS NEEDS TO BE A REDIRECT!!!! if hettpmethod is post this needs to be a redirect.
         return render(request, 'PostmanClone/results.html', context)
     elif 'saveButton' in request.POST:
+        print("save button")
+        current_user = request.user
         #make a separate method that you pass POST into sometime to clean up this code!!  it can return your entire context
         baseURL = request.POST['baseURL']
 
         new_api_call = apiCall()
-        new_api_call.base_url, new_api_call.headersa1, new_api_call.headersb1, new_api_call.headersa2, new_api_call.headersb2, new_api_call.headersa3, new_api_call.headersb3, new_api_call.httpMethod = request.POST['baseURL'], request.POST['headersa1'],request.POST['headersb1'], request.POST['headersa2'],request.POST['headersb2'], request.POST['headersa3'], request.POST['headersb3'], request.POST['httpMethod']
+        new_api_call.base_url, new_api_call.headersa1, new_api_call.headersb1, new_api_call.headersa2, new_api_call.headersb2, new_api_call.headersa3, new_api_call.headersb3, new_api_call.httpMethod, new_api_call.user, new_api_call.name = request.POST['baseURL'], request.POST['headersa1'],request.POST['headersb1'], request.POST['headersa2'],request.POST['headersb2'], request.POST['headersa3'], request.POST['headersb3'], request.POST['httpMethod'], current_user, request.POST['api_call_name']
         new_api_call.save()
-        return render(request, 'PostmanClone/index.html')
+        return redirect('index')
 
 def myregister(request):
     if request.method == 'POST':
@@ -52,7 +58,7 @@ def myregister(request):
             password = form.cleaned_data['password1']
             user = authenticate(username = username, password = password)
             login(request, user)
-            redirect('index')
+            return redirect('index')
     else:
         form = UserCreationForm()
 
