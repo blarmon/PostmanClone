@@ -5,6 +5,7 @@
     <title>Postman Clone</title>
 </head>
 <body>
+<a href="{% url 'contact' %}">contact form</a>
     <h1>index page</h1>
     {% if user.is_authenticated %}
     <h2>your name is: {{ user.username }}</h2>
@@ -15,10 +16,30 @@
     <p><a href="{% url 'register' %}">Or register here!</a></p>
     {% endif %}
 
+<br><br>
+    {% if baseURL %}
+    Base URL: {{ baseURL }}<br>
+    headers: {{ headers }}<br>
+    HTTP Method: {{ httpMethod }}<br>
+    API response: {{ apiResponse }}<br><br>
+    Python Code: <br> {{pythonCode|linebreaks}}<br><br>
+    <form action="{% url 'submit' %}" method="POST">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+        Name for API call:
+        <input type="text" name="api_call_name" id="api_call_name">
+        <input type="hidden" value="{{ baseURL }}" name="baseURL" id="baseURLSave">
+        <input type="hidden" value="{{ httpMethod }}" name="httpMethod" id="httpMethod">
+        <input type="hidden" value="{{ headers }}" name="headers" id="headers">
+        <input type="submit" value="Save Call" name="saveButton">
+        <br><br>
+        {% endif %}
+    </form>
+    {% endif %}
 
-<form action = http://127.0.0.1:8000/submit  method="post">
+<form action="{% url 'index' %}"  method="POST">
     {% csrf_token %}
-    base url:<input type="text" name="baseURL" id="baseURL"><br>
+    base url:<input type="text" name="baseURL" id="baseURLSubmit"><br>
     headers:<br>
     <input type="text" name="headersa1" id="headersa1">
     <input type="text" name="headersb1" id="headersb1"><br>
@@ -32,11 +53,6 @@
         <option value="POST">POSTbutdon'tusethisrightnow</option>
     </select><br>
     <input type="submit" value="Submit" name="submitButton">
-    {% if user.is_authenticated %}
-        Name for API call:
-        <input type="text" name="api_call_name" id="api_call_name">
-        <input type="submit" value="Save Call" name="saveButton">
-    {% endif %}
 </form>
 <br><br>
 
