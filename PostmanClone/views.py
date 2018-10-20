@@ -46,11 +46,17 @@ def submit(request):
         current_user = request.user
         current_collection = get_object_or_404(Collection, name=request.session['collection'])
         headers = ast.literal_eval((request.POST['headers']))
-        headersList = []
+        print(headers)
+        headersList = ["" for i in range(6)]
+        count = 0
         for key, value in headers.items():
-            headersList.append(key)
-            headersList.append(value)
-
+            # headersList.append(key)
+            # headersList.append(value)
+            headersList[count] = key
+            count += 1
+            headersList[count] = value
+            count += 1
+        print(headersList)
         #make a separate method that you pass POST into sometime to clean up this code!!  it can return your entire context
         new_api_call = apiCall()
         new_api_call.base_url, new_api_call.headersa1, new_api_call.headersb1, new_api_call.headersa2, new_api_call.headersb2, new_api_call.headersa3, new_api_call.headersb3, new_api_call.httpMethod, new_api_call.collection, new_api_call.name = request.POST['baseURL'], headersList[0], headersList[1], headersList[2], headersList[3], headersList[4], headersList[5], request.POST['httpMethod'], current_collection, request.POST['api_call_name']
@@ -61,11 +67,15 @@ def emailThankYou(request):
     return render(request, 'PostmanClone/thankyouemail.html')
 
 def changeCollection(request):
-    request.session['collection'] = request.POST['collection']
+    if request.POST['collection'] == 'newCollection':
+        newCollection = Collection(name=request.POST['newCollectionName'], user = request.user)
+        newCollection.save()
+        request.session['collection'] = request.POST['newCollectionName']
+    else:
+        request.session['collection'] = request.POST['collection']
     return redirect('index')
 
 def contact(request):
-    print(request.session['mycount'])
     if request.method == 'POST':
         #figure this part out later! TODO
         return redirect('thanks')

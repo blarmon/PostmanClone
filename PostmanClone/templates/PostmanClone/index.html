@@ -63,12 +63,15 @@
     {% for collection in user_collections  %}
        <input type="submit" name="collection" value="{{ collection }}">
     {% endfor %}
+        <br>
+        <input type="text" name="newCollectionName" id="newCollectionName">
+        <input type="submit" name="collection" value="newCollection">
     </form>
     {% if current_collection_name %}
         CALLS FOR {{ current_collection_name }}
         {% for call in user_calls  %}
           <p>{{ call }}</p>
-    {% endfor %}
+        {% endfor %}
     {% else %}
         <p>Choose a collection to see its calls below</p>
     {% endif %}
