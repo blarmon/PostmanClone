@@ -57,7 +57,12 @@
 <br><br>
 
 {% if user.is_authenticated %}
-    {% for call in saved_calls  %}
+    COLLECTIONS:
+    {% for collection in user_collections  %}
+      <p>{{ collection }}</p>
+    {% endfor %}
+    CALLS:
+    {% for call in user_calls  %}
       <p>{{ call }}</p>
     {% endfor %}
 {% endif %}

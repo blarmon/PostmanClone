@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import test, apiCall
+from .models import test, apiCall, Collection
 from django.urls import reverse
 import requests, ast
 from .forms import ApiForm
@@ -26,8 +26,17 @@ def index(request):
         context.update(contextAddition)
 
     current_user = request.user
-    saved_calls = [i for i in apiCall.objects.filter(user = current_user.id)]
-    context.update({'saved_calls': saved_calls})
+    user_collections = [i for i in Collection.objects.filter(user = current_user.id)]
+    #hash table to store calls and connect them to a certain collection!!!
+    user_calls = []
+    for collection in user_collections:
+        user_calls.append(apiCall.objects.filter(collection = collection))
+    #create a blank dictionary
+
+
+
+
+    context.update({'user_collections': user_collections, 'user_calls': user_calls})
     return render(request, 'PostmanClone/index.html', context)
 
 def submit(request):

@@ -11,8 +11,15 @@ class test(models.Model):
     def __str__(self):
         return self.testing_text
 
-class apiCall(models.Model):
+class Collection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class apiCall(models.Model):
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     base_url = models.TextField()
     headersa1 = models.TextField()
