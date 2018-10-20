@@ -64,10 +64,14 @@
        <input type="submit" name="collection" value="{{ collection }}">
     {% endfor %}
     </form>
-    CALLS:
-    {% for call in user_calls  %}
-      <p>{{ call }}</p>
+    {% if current_collection_name %}
+        CALLS FOR {{ current_collection_name }}
+        {% for call in user_calls  %}
+          <p>{{ call }}</p>
     {% endfor %}
+    {% else %}
+        <p>Choose a collection to see its calls below</p>
+    {% endif %}
 {% endif %}
 
 <!--<form action = http://127.0.0.1:8000/postman/submit  method="post">
