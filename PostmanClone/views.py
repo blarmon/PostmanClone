@@ -11,6 +11,10 @@ from django.core.mail import send_mail
 # Create your views here.
 def index(request):
     context = {}
+    if 'collection' not in request.session:
+         print("no collection chosen!!")
+    else:
+        print(request.session['collection'])
     if request.method == "POST":
         baseURL = request.POST['baseURL']
         httpMethod = request.POST['httpMethod']
@@ -29,12 +33,12 @@ def index(request):
     user_collections = [i for i in Collection.objects.filter(user = current_user.id)]
     #hash table to store calls and connect them to a certain collection!!!
     user_calls = []
-    for collection in user_collections:
-        user_calls.append(apiCall.objects.filter(collection = collection))
-    #create a blank dictionary
-
-
-
+    if 'collection' not in request.session:
+        user_calls.append("no saved calls right now sorry")
+    else:
+        #this is definitely an unnecessary DB call, try to eliminate this if possible...
+        current_session_collection = get_object_or_404(Collection, name = request.session['collection'])
+        user_calls.append(apiCall.objects.filter(collection = current_session_collection))
 
     context.update({'user_collections': user_collections, 'user_calls': user_calls})
     return render(request, 'PostmanClone/index.html', context)
@@ -57,18 +61,23 @@ def submit(request):
 def emailThankYou(request):
     return render(request, 'PostmanClone/thankyouemail.html')
 
+def changeCollection(request):
+    request.session['collection'] = request.POST['collection']
+    return redirect('index')
+
 def contact(request):
+    print(request.session['mycount'])
     if request.method == 'POST':
         #figure this part out later! TODO
         return redirect('thanks')
-        send_mail(
-            request.POST['subject'],
-            request.POST['content'],
-            request.POST['fromEmail'],
-            ['c.siegel1991@gmail.com'],
-            fail_silently=False,
-        )
-        return redirect('index')
+        # send_mail(
+        #     request.POST['subject'],
+        #     request.POST['content'],
+        #     request.POST['fromEmail'],
+        #     ['c.siegel1991@gmail.com'],
+        #     fail_silently=False,
+        # )
+        #return redirect('index')
     else:
         return render(request, 'PostmanClone/contactform.html')
 

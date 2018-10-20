@@ -58,9 +58,12 @@
 
 {% if user.is_authenticated %}
     COLLECTIONS:
+    <form action="{% url 'changeCollection' %}" method="post">
+        {% csrf_token %}
     {% for collection in user_collections  %}
-      <p>{{ collection }}</p>
+       <input type="submit" name="collection" value="{{ collection }}">
     {% endfor %}
+    </form>
     CALLS:
     {% for call in user_calls  %}
       <p>{{ call }}</p>
