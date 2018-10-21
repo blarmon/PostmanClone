@@ -1,22 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Postman Clone</title>
-</head>
-<body>
-<a href="{% url 'contact' %}">contact form</a>
-    <h1>index page</h1>
-    {% if user.is_authenticated %}
-    <h2>your name is: {{ user.username }}</h2>
-    <p><a href="/accounts/logout">Log out</a></p>
-    {% else %}
-    <h2>you're not logged in buddo</h2>
-    <p><a href="/accounts/login">Log in here!</a></p>
-    <p><a href="{% url 'register' %}">Or register here!</a></p>
-    {% endif %}
+{% extends 'PostmanClone/base.html' %}
 
-<br><br>
+{% block content %}
     {% if baseURL %}
     Base URL: {{ baseURL }}<br>
     headers: {{ headers }}<br>
@@ -35,23 +19,26 @@
         <br><br>
         {% endif %}
     </form>
+    Send another call below!
     {% endif %}
 
 <form action="{% url 'index' %}"  method="POST">
     {% csrf_token %}
-    base url:<input type="text" name="baseURL" id="baseURLSubmit"><br>
-    headers:<br>
+    <br>
+    Base URL:<br>
+    <input type="text" name="baseURL" id="baseURLSubmit"><br><br>
+    Headers:<br>
     <input type="text" name="headersa1" id="headersa1">
     <input type="text" name="headersb1" id="headersb1"><br>
     <input type="text" name="headersa2" id="headersa2">
     <input type="text" name="headersb2" id="headersb2"><br>
     <input type="text" name="headersa3" id="headersa3">
-    <input type="text" name="headersb3" id="headersb3"><br>
-    HTTP Method:
+    <input type="text" name="headersb3" id="headersb3"><br><br>
+    HTTP Method:<br>
     <select name="httpMethod">
         <option value="GET">GET</option>
         <option value="POST">POSTbutdon'tusethisrightnow</option>
-    </select><br>
+    </select><br><br>
     <input type="submit" value="Submit" name="submitButton">
 </form>
 <br><br>
@@ -70,7 +57,7 @@
     {% if current_collection_name %}
         CALLS FOR {{ current_collection_name }}
         {% for call in user_calls  %}
-          <p>{{ call }}</p>
+            <br> {{ call }}
         {% endfor %}
     {% else %}
         <p>Choose a collection to see its calls below</p>
@@ -82,5 +69,4 @@
     {{ form }}
     <input type="submit" value="Submit">
 </form>-->
-</body>
-</html>
+{% endblock %}

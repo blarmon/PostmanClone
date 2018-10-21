@@ -1,21 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-</head>
-<body>
-    <h1>Registration Page</h1>
-    <form method="post" action="{% url 'register' %}">
-        {% csrf_token %}
+{% extends 'PostmanClone/base.html' %}
 
-        {% if form.errors %}
-        <p>There are errors in the form!</p>
-        {% endif %}
+{% block content %}
+<h1>Registration Page</h1>
+<form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
 
-        {{ form }}
+    {% if form.errors %}
+    <p>There are errors in the form!</p>
+    {% endif %}
 
-        <input type="submit" value="Register">
-    </form>
-</body>
-</html>
+    {{ form }}
+
+    <input type="submit" value="Register">
+</form>
+
+{% endblock %}

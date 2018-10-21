@@ -36,8 +36,8 @@ def index(request):
         #this is definitely an unnecessary DB call, try to eliminate this if possible...
         current_collection_name = request.session['collection']
         current_session_collection = get_object_or_404(Collection, name = request.session['collection'])
-        user_calls.append(apiCall.objects.filter(collection = current_session_collection))
-
+        user_calls = apiCall.objects.filter(collection = current_session_collection)
+        print(user_calls)
     context.update({'user_collections': user_collections, 'user_calls': user_calls, 'current_collection_name': current_collection_name})
     return render(request, 'PostmanClone/index.html', context)
 

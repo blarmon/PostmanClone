@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Postman Clone</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'index' %}">Postman Clone</a>
+    </div>
+    <ul class="nav navbar-nav">
+        <li class="active">
+        <span>
+            <a href="{% url 'index' %}">Home</a>|
+            <a href="{% url 'contact' %}">Contact Me</a>|
+            {% if user.is_authenticated %}
+            Hello, {{ user.username }}|
+            <a href="/accounts/logout">Log out</a>|
+            {% else %}
+            <a href="/accounts/login">Log In</a>|
+            <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </span>
+        </li>
+    </ul>
+    </div>
+</nav>
+
+    <div class="container">
+    {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
