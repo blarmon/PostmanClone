@@ -12,18 +12,37 @@ from django.core.mail import send_mail
 def index(request):
     context = {}
     if request.method == "POST":
-        baseURL = request.POST['baseURL']
-        httpMethod = request.POST['httpMethod']
-        headers = {}
-        # make this thing its own method since you'll be doing shit with the headers all over the place!!!
-        for i in range(3):
-            index = i + 1
-            if (request.POST['headersa' + str(index)] != ""):
-                headers[request.POST['headersa' + str(index)]] = request.POST['headersb' + str(index)]
-        api_response = requests.request(httpMethod, baseURL, headers=headers).json()
-        pythonCode = generatePythonCode(baseURL, httpMethod, headers)
-        contextAddition = {'baseURL': baseURL, 'httpMethod': httpMethod, 'headers': headers, 'apiResponse': api_response, 'pythonCode': pythonCode}
-        context.update(contextAddition)
+        #TODO THIS AINT IT.  the index page isn't rendering properly cuz you're missing a bunch of stuff.
+        if ('delete call' in request.POST):
+            currentCall = apiCall.objects.get(id=request.POST['delete call'])
+            currentCall.delete()
+
+        elif('call' in request.POST):
+            currentCall = apiCall.objects.get(id=request.POST['call'])
+            baseURL = currentCall.base_url
+            httpMethod = currentCall.httpMethod
+            headersa1 = currentCall.headersa1
+            headersb1 = currentCall.headersb1
+            headersa2 = currentCall.headersa2
+            headersb2 = currentCall.headersb2
+            headersa3 = currentCall.headersa3
+            headersb3 = currentCall.headersb3
+            contextAddition = {'baseURL': baseURL, 'httpMethod': httpMethod, 'headersa1': headersa1, 'headersb1': headersb1, 'headersa2': headersa2, 'headersb2': headersb2, 'headersa3': headersa3, 'headersb3': headersb3}
+            context.update(contextAddition)
+
+        else:
+            baseURL = request.POST['baseURL']
+            httpMethod = request.POST['httpMethod']
+            headers = {}
+            # make this thing its own method since you'll be doing shit with the headers all over the place!!!
+            for i in range(3):
+                index = i + 1
+                if (request.POST['headersa' + str(index)] != ""):
+                    headers[request.POST['headersa' + str(index)]] = request.POST['headersb' + str(index)]
+            api_response = requests.request(httpMethod, baseURL, headers=headers).json()
+            pythonCode = generatePythonCode(baseURL, httpMethod, headers)
+            contextAddition = {'baseURL': baseURL, 'httpMethod': httpMethod, 'headers': headers, 'apiResponse': api_response, 'pythonCode': pythonCode, 'headersa1': request.POST['headersa1'], 'headersb1': request.POST['headersb1'], 'headersa2': request.POST['headersa2'], 'headersb2': request.POST['headersb2'], 'headersa3': request.POST['headersa3'], 'headersb3': request.POST['headersb3']}
+            context.update(contextAddition)
 
     current_user = request.user
     user_collections = [i for i in Collection.objects.filter(user = current_user.id)]
@@ -37,7 +56,8 @@ def index(request):
         current_collection_name = request.session['collection']
         current_session_collection = get_object_or_404(Collection, name = request.session['collection'])
         user_calls = apiCall.objects.filter(collection = current_session_collection)
-        print(user_calls)
+
+    print(user_calls)
     context.update({'user_collections': user_collections, 'user_calls': user_calls, 'current_collection_name': current_collection_name})
     return render(request, 'PostmanClone/index.html', context)
 

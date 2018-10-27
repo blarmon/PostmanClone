@@ -1,41 +1,38 @@
 {% extends 'PostmanClone/base.html' %}
 
 {% block content %}
-    {% if baseURL %}
-    Base URL: {{ baseURL }}<br>
-    headers: {{ headers }}<br>
-    HTTP Method: {{ httpMethod }}<br>
-    API response: {{ apiResponse }}<br><br>
-    Python Code: <br> {{pythonCode|linebreaks}}<br><br>
-    <form action="{% url 'submit' %}" method="POST">
-        {% csrf_token %}
-        {% if user.is_authenticated %}
-        Name for API call:
-        <input type="text" name="api_call_name" id="api_call_name">
-        <input type="hidden" value="{{ baseURL }}" name="baseURL" id="baseURLSave">
-        <input type="hidden" value="{{ httpMethod }}" name="httpMethod" id="httpMethod">
-        <input type="hidden" value="{{ headers }}" name="headers" id="headers">
-        <input type="submit" value="Save Call" name="saveButton">
-        <br><br>
-        {% endif %}
-    </form>
-    Send another call below!
+{% if baseURL %}
+HTTP Method: {{ httpMethod }}<br>
+API response: {{ apiResponse }}<br><br>
+Python Code: <br> {{pythonCode|linebreaks}}<br><br>
+{% if user.is_authenticated %}
+<form action="{% url 'submit' %}" method="POST">
+    {% csrf_token %}
+    Name for API call:
+    <input type="text" name="api_call_name" id="api_call_name">
+    <input type="hidden" value="{{ baseURL }}" name="baseURL" id="baseURLSave">
+    <input type="hidden" value="{{ httpMethod }}" name="httpMethod" id="httpMethod">
+    <input type="hidden" value="{{ headers }}" name="headers" id="headers">
+    <input type="submit" value="Save Call" name="saveButton">
+    <br><br>
+</form>
+{% endif %}
     {% endif %}
-
+<!--TODO : big time thing!!! make it so a new call OR loading a saved call partially fills out the form instead of just telling you what you sent!  this is way better!-->
 <form action="{% url 'index' %}"  method="POST">
     {% csrf_token %}
     <br>
     Base URL:<br>
-    <input type="text" name="baseURL" id="baseURLSubmit"><br><br>
+    <input type="text" name="baseURL" id="baseURLSubmit" value="{{ baseURL }}"><br><br>
     Headers:<br>
-    <input type="text" name="headersa1" id="headersa1">
-    <input type="text" name="headersb1" id="headersb1"><br>
-    <input type="text" name="headersa2" id="headersa2">
-    <input type="text" name="headersb2" id="headersb2"><br>
-    <input type="text" name="headersa3" id="headersa3">
-    <input type="text" name="headersb3" id="headersb3"><br><br>
+    <input type="text" name="headersa1" id="headersa1" value="{{ headersa1 }}">
+    <input type="text" name="headersb1" id="headersb1" value="{{ headersb1 }}"><br>
+    <input type="text" name="headersa2" id="headersa2" value="{{ headersa2 }}">
+    <input type="text" name="headersb2" id="headersb2" value="{{ headersb2 }}"><br>
+    <input type="text" name="headersa3" id="headersa3" value="{{ headersa3 }}">
+    <input type="text" name="headersb3" id="headersb3" value="{{ headersb3 }}"><br><br>
     HTTP Method:<br>
-    <select name="httpMethod">
+    <select name="httpMethod" value="POST">
         <option value="GET">GET</option>
         <option value="POST">POSTbutdon'tusethisrightnow</option>
     </select><br><br>
@@ -56,14 +53,18 @@
     </form>
     {% if current_collection_name %}
         CALLS FOR {{ current_collection_name }}
-        {% for call in user_calls  %}
-            <br> {{ call }}
-        {% endfor %}
-    {% else %}
-        <p>Choose a collection to see its calls below</p>
+            <form action="{% url 'index' %}" method="post">
+                {% csrf_token %}
+                {% for call in user_calls  %}
+                <br> <button type="submit" name="call" value="{{ call.id }}">{{ call }}</button>
+                <button type="submit" name="delete call" value="{{ call.id }}">Delete Call</button>
+                {% endfor %}
+                {% else %}
+                <p>Choose a collection to see its calls below</p>
+            </form>
     {% endif %}
-{% endif %}
 
+{% endif %}
 <!--<form action = http://127.0.0.1:8000/postman/submit  method="post">
     {% csrf_token %}
     {{ form }}
