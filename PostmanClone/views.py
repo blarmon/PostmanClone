@@ -12,7 +12,6 @@ from django.core.mail import send_mail
 def index(request):
     context = {}
     if request.method == "POST":
-        #TODO THIS AINT IT.  the index page isn't rendering properly cuz you're missing a bunch of stuff.
         if ('delete call' in request.POST):
             currentCall = apiCall.objects.get(id=request.POST['delete call'])
             currentCall.delete()
@@ -45,7 +44,7 @@ def index(request):
             context.update(contextAddition)
 
     current_user = request.user
-    user_collections = [i for i in Collection.objects.filter(user = current_user.id)]
+    user_collections = [i for i in Collection.objects.filter(user=current_user.id)]
     #hash table to store calls and connect them to a certain collection!!!
     user_calls = []
     current_collection_name = None
@@ -57,8 +56,20 @@ def index(request):
         current_session_collection = get_object_or_404(Collection, name = request.session['collection'])
         user_calls = apiCall.objects.filter(collection = current_session_collection)
 
-    print(user_calls)
-    context.update({'user_collections': user_collections, 'user_calls': user_calls, 'current_collection_name': current_collection_name})
+    user_dict = {}
+    for curr_collection in user_collections:
+        my_new_user_calls = apiCall.objects.filter(collection=curr_collection)
+        #print(curr_collection)
+        for call in my_new_user_calls:
+            #print(call)
+            if str(curr_collection) not in user_dict:
+                user_dict.update({str(curr_collection): [call]})
+            else:
+                user_dict[str(curr_collection)].append(call)
+
+    print(user_dict)
+
+    context.update({'user_collections': user_collections, 'user_calls': user_calls, 'current_collection_name': current_collection_name, 'user_dict': user_dict})
     return render(request, 'PostmanClone/index.html', context)
 
 def submit(request):

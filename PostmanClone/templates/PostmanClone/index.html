@@ -18,7 +18,7 @@ Python Code: <br> {{pythonCode|linebreaks}}<br><br>
 </form>
 {% endif %}
     {% endif %}
-<!--TODO : big time thing!!! make it so a new call OR loading a saved call partially fills out the form instead of just telling you what you sent!  this is way better!-->
+
 <form action="{% url 'index' %}"  method="POST">
     {% csrf_token %}
     <br>
@@ -65,6 +65,55 @@ Python Code: <br> {{pythonCode|linebreaks}}<br><br>
     {% endif %}
 
 {% endif %}
+
+<ul class="nav nav-tabs">
+    <li class="nav-item active">
+        <a href="#NewCollection" class="nav-link active" role="tab" data-toggle="tab">New Collection</a>
+    </li>
+    {% for collection in user_dict  %}
+    <li class="nav-item" >
+        <a href="#{{ collection|cut:' '|cut:'!' }}" class="nav-link" role="tab" data-toggle="tab">{{ collection }}</a>
+    </li>
+    {% endfor %}
+</ul>
+<!--TODO add the calls to the collection in the view!  then you can use a for loop in the template to display the appropriate calls under the collection -->
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane fade in show active" id="NewCollection">1</div>
+    {% for key, collection in user_dict.items  %}
+    <div role="tabpanel" class="tab-pane fade" id="{{ key|cut:' '|cut:'!' }}">
+        collection: {{ key }}<br>
+        <form action="{% url 'index' %}" method="post">
+        {% for call in collection %}
+            <br> <button type="submit" name="call" value="{{ call.id }}">{{ call }}</button>
+            <button type="submit" name="delete call" value="{{ call.id }}">Delete Call</button>
+        {% endfor %}
+            </form>
+
+        <form action="{% url 'index' %}"  method="POST">
+            {% csrf_token %}
+            <br>
+            Base URL:<br>
+            <input type="text" name="baseURL" id="baseURLSubmit" value="{{ baseURL }}"><br><br>
+            Headers:<br>
+            <input type="text" name="headersa1" id="headersa1" value="{{ headersa1 }}">
+            <input type="text" name="headersb1" id="headersb1" value="{{ headersb1 }}"><br>
+            <input type="text" name="headersa2" id="headersa2" value="{{ headersa2 }}">
+            <input type="text" name="headersb2" id="headersb2" value="{{ headersb2 }}"><br>
+            <input type="text" name="headersa3" id="headersa3" value="{{ headersa3 }}">
+            <input type="text" name="headersb3" id="headersb3" value="{{ headersb3 }}"><br><br>
+            HTTP Method:<br>
+            <select name="httpMethod" value="POST">
+                <option value="GET">GET</option>
+                <option value="POST">POSTbutdon'tusethisrightnow</option>
+            </select><br><br>
+            <input type="submit" value="Submit" name="submitButton">
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <!--<form action = http://127.0.0.1:8000/postman/submit  method="post">
     {% csrf_token %}
     {{ form }}
