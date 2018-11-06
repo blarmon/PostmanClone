@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 # Create your views here.
 def index(request):
     context = {}
+    call_made = False
     if request.method == "POST":
         if ('delete call' in request.POST):
             currentCall = apiCall.objects.get(id=request.POST['delete call'])
@@ -28,8 +29,8 @@ def index(request):
             headersb3 = currentCall.headersb3
             contextAddition = {'baseURL': baseURL, 'httpMethod': httpMethod, 'headersa1': headersa1, 'headersb1': headersb1, 'headersa2': headersa2, 'headersb2': headersb2, 'headersa3': headersa3, 'headersb3': headersb3}
             context.update(contextAddition)
-
         else:
+            call_made = True
             baseURL = request.POST['baseURL']
             httpMethod = request.POST['httpMethod']
             headers = {}
@@ -42,7 +43,7 @@ def index(request):
             pythonCode = generatePythonCode(baseURL, httpMethod, headers)
             contextAddition = {'baseURL': baseURL, 'httpMethod': httpMethod, 'headers': headers, 'apiResponse': api_response, 'pythonCode': pythonCode, 'headersa1': request.POST['headersa1'], 'headersb1': request.POST['headersb1'], 'headersa2': request.POST['headersa2'], 'headersb2': request.POST['headersb2'], 'headersa3': request.POST['headersa3'], 'headersb3': request.POST['headersb3']}
             context.update(contextAddition)
-
+    context.update({'call_made': call_made})
     current_user = request.user
     user_collections = [i for i in Collection.objects.filter(user=current_user.id)]
     #hash table to store calls and connect them to a certain collection!!!
@@ -53,19 +54,16 @@ def index(request):
     else:
         #this is definitely an unnecessary DB call, try to eliminate this if possible...
         current_collection_name = request.session['collection']
-        current_session_collection = get_object_or_404(Collection, name = request.session['collection'])
-        user_calls = apiCall.objects.filter(collection = current_session_collection)
+        current_session_collection = get_object_or_404(Collection, name=request.session['collection'])
+        user_calls = apiCall.objects.filter(collection=current_session_collection)
 
     user_dict = {}
     for curr_collection in user_collections:
         my_new_user_calls = apiCall.objects.filter(collection=curr_collection)
+        user_dict.update({str(curr_collection): []})
         #print(curr_collection)
         for call in my_new_user_calls:
-            #print(call)
-            if str(curr_collection) not in user_dict:
-                user_dict.update({str(curr_collection): [call]})
-            else:
-                user_dict[str(curr_collection)].append(call)
+            user_dict[str(curr_collection)].append(call)
 
     print(user_dict)
 
