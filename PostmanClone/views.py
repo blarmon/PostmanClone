@@ -65,8 +65,6 @@ def index(request):
         for call in my_new_user_calls:
             user_dict[str(curr_collection)].append(call)
 
-    print(user_dict)
-
     context.update({'user_collections': user_collections, 'user_calls': user_calls, 'current_collection_name': current_collection_name, 'user_dict': user_dict})
     return render(request, 'PostmanClone/index.html', context)
 
@@ -96,7 +94,9 @@ def emailThankYou(request):
     return render(request, 'PostmanClone/thankyouemail.html')
 
 def changeCollection(request):
-    if request.POST['collection'] == 'newCollection':
+    print("before if statement")
+    if request.POST['collection'] == 'Create Collection':
+        print("made it!!!")
         newCollection = Collection(name=request.POST['newCollectionName'], user = request.user)
         newCollection.save()
         request.session['collection'] = request.POST['newCollectionName']
