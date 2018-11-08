@@ -1,6 +1,19 @@
 {% extends 'PostmanClone/base.html' %}
 
 {% block content %}
+<script type="text/javascript">
+$(document).ready(function () {
+
+    $.ajaxSetup({data: {
+    csrfmiddlewaretoken: '{{ csrf_token }}'
+    }});
+
+   $( ".collection" ).click(function() {
+        $.post('{% url 'changeCollectionAjax' %}', {'data': $(this).html()})
+   });
+});
+</script>
+
 {% if baseURL %}
 {% if call_made %}
 HTTP Method: {{ httpMethod }}<br>
@@ -28,7 +41,7 @@ Python Code: <br> {{pythonCode|linebreaks}}<br><br>
     </li>
     {% for collection in user_dict  %}
     <li class="nav-item" >
-        <a href="#{{ collection|cut:' '|cut:'!' }}" class="nav-link" role="tab" data-toggle="tab">{{ collection }}</a>
+        <a href="#{{ collection|cut:' '|cut:'!' }}" class="nav-link collection" role="tab" data-toggle="tab">{{ collection }}</a>
     </li>
     {% endfor %}
 </ul>
@@ -43,6 +56,10 @@ Python Code: <br> {{pythonCode|linebreaks}}<br><br>
     </div>
     {% for key, collection in user_dict.items  %}
     <div role="tabpanel" class="tab-pane fade" id="{{ key|cut:' '|cut:'!' }}">
+        <form action="{% url 'changeCollection' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="delete collection" value="{{ key }}">Delete Collection</button>
+        </form>
         <form action="{% url 'index' %}" method="post">
             {% csrf_token %}
             {% for call in collection %}
@@ -53,6 +70,7 @@ Python Code: <br> {{pythonCode|linebreaks}}<br><br>
     </div>
     {% endfor %}
 </div>
+{% endif %}
 
 <form action="{% url 'index' %}"  method="POST">
     {% csrf_token %}
@@ -77,5 +95,4 @@ Python Code: <br> {{pythonCode|linebreaks}}<br><br>
 
 <br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-{% endif %}
 {% endblock %}

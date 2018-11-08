@@ -8,4 +8,5 @@ urlpatterns = [
     path('contact', views.contact, name='contact'),
     path('thanks', views.emailThankYou, name='thanks'),
     path('changeCollection', views.changeCollection, name='changeCollection'),
+    path('changeCollectionAjax', views.changeCollectionAjax, name='changeCollectionAjax'),
 ]

@@ -10,6 +10,9 @@ from django.core.mail import send_mail
 
 # Create your views here.
 def index(request):
+    if 'collection' in request.session:
+        print(request.session['collection'])
+
     context = {}
     call_made = False
     if request.method == "POST":
@@ -70,7 +73,7 @@ def index(request):
 
 def submit(request):
     if 'saveButton' in request.POST:
-        current_user = request.user
+        print(request.session['collection'])
         current_collection = get_object_or_404(Collection, name=request.session['collection'])
         headers = ast.literal_eval((request.POST['headers']))
         print(headers)
@@ -93,11 +96,19 @@ def submit(request):
 def emailThankYou(request):
     return render(request, 'PostmanClone/thankyouemail.html')
 
+def changeCollectionAjax(request):
+    if ('data' in request.POST):
+        print(request.POST['data'])
+        request.session['collection'] = request.POST['data']
+        return HttpResponse("OK")
+
 def changeCollection(request):
-    print("before if statement")
-    if request.POST['collection'] == 'Create Collection':
-        print("made it!!!")
-        newCollection = Collection(name=request.POST['newCollectionName'], user = request.user)
+    if 'delete collection' in request.POST:
+        my_collection = get_object_or_404(Collection, name=request.POST['delete collection'])
+        my_collection.delete()
+    #TODO this is such a stupid way to check.  check if 'collection' in request.post and nest another statement inside to check what the value is.
+    elif request.POST['collection'] == 'Create Collection':
+        newCollection = Collection(name=request.POST['newCollectionName'], user=request.user)
         newCollection.save()
         request.session['collection'] = request.POST['newCollectionName']
     else:
@@ -106,7 +117,7 @@ def changeCollection(request):
 
 def contact(request):
     if request.method == 'POST':
-        #figure this part out later! TODO
+        # TODO figure this part out later!
         return redirect('thanks')
         # send_mail(
         #     request.POST['subject'],
@@ -127,7 +138,7 @@ def myregister(request):
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
-            user = authenticate(username = username, password = password)
+            user = authenticate(username=username, password = password)
             login(request, user)
             return redirect('index')
     else:
