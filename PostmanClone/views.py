@@ -10,10 +10,11 @@ from django.core.mail import send_mail
 
 # Create your views here.
 def index(request):
+    context = {}
     if 'collection' in request.session:
         print(request.session['collection'])
+        context.update({'session_collection': request.session['collection']})
 
-    context = {}
     call_made = False
     if request.method == "POST":
         if ('delete call' in request.POST):

@@ -25,13 +25,13 @@
     <ul class="nav navbar-nav">
         <li class="active">
         <span>
-            <a href="{% url 'index' %}">Home</a>|
-            <a href="{% url 'contact' %}">Contact Me</a>|
+            <a href="{% url 'index' %}"> Home&nbsp;</a>|
+            <a href="{% url 'contact' %}"> Contact Me&nbsp;</a>|
             {% if user.is_authenticated %}
-            Hello, {{ user.username }}|
-            <a href="/accounts/logout">Log out</a>|
+            Hello, {{ user.username }}&nbsp;|
+            <a href="/accounts/logout">Log out</a>&nbsp;|
             {% else %}
-            <a href="/accounts/login">Log In</a>|
+            <a href="/accounts/login">Log In</a>&nbsp;|
             <a href="{% url 'register' %}">Register</a>
             {% endif %}
         </span>

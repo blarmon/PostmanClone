@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/register', views.myregister, name='register'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('api/', include('restapi.urls')),
 ]

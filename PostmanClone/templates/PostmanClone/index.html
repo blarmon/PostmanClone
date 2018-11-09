@@ -11,6 +11,13 @@ $(document).ready(function () {
    $( ".collection" ).click(function() {
         $.post('{% url 'changeCollectionAjax' %}', {'data': $(this).html()})
    });
+
+    {% if session_collection %}
+        $(".active").removeClass("active");
+        $('[href*="#{{ session_collection|cut:' '|cut:'!'  }}"]').addClass("active");
+        $('[href*="#{{ session_collection|cut:' '|cut:'!'  }}"]').parent().addClass("active");
+    {% endif %}
+
 });
 </script>
 
