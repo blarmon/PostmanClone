@@ -16,6 +16,9 @@ $(document).ready(function () {
         $(".active").removeClass("active");
         $('[href*="#{{ session_collection|cut:' '|cut:'!'  }}"]').addClass("active");
         $('[href*="#{{ session_collection|cut:' '|cut:'!'  }}"]').parent().addClass("active");
+        $(".show").removeClass("show");
+        $("#{{ session_collection|cut:' '|cut:'!'  }}").addClass("show");
+        $("#{{ session_collection|cut:' '|cut:'!'  }}").addClass("active");
     {% endif %}
 
 });

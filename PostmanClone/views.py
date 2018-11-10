@@ -12,7 +12,6 @@ from django.core.mail import send_mail
 def index(request):
     context = {}
     if 'collection' in request.session:
-        print(request.session['collection'])
         context.update({'session_collection': request.session['collection']})
 
     call_made = False
@@ -43,7 +42,9 @@ def index(request):
                 index = i + 1
                 if (request.POST['headersa' + str(index)] != ""):
                     headers[request.POST['headersa' + str(index)]] = request.POST['headersb' + str(index)]
+            print("before request")
             api_response = requests.request(httpMethod, baseURL, headers=headers).json()
+            print(api_response)
             pythonCode = generatePythonCode(baseURL, httpMethod, headers)
             contextAddition = {'baseURL': baseURL, 'httpMethod': httpMethod, 'headers': headers, 'apiResponse': api_response, 'pythonCode': pythonCode, 'headersa1': request.POST['headersa1'], 'headersb1': request.POST['headersb1'], 'headersa2': request.POST['headersa2'], 'headersb2': request.POST['headersb2'], 'headersa3': request.POST['headersa3'], 'headersb3': request.POST['headersb3']}
             context.update(contextAddition)
@@ -107,6 +108,7 @@ def changeCollection(request):
     if 'delete collection' in request.POST:
         my_collection = get_object_or_404(Collection, name=request.POST['delete collection'])
         my_collection.delete()
+        del request.session['collection']
     #TODO this is such a stupid way to check.  check if 'collection' in request.post and nest another statement inside to check what the value is.
     elif request.POST['collection'] == 'Create Collection':
         newCollection = Collection(name=request.POST['newCollectionName'], user=request.user)
