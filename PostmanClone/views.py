@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import test, apiCall, Collection
 from django.urls import reverse
@@ -43,7 +43,11 @@ def index(request):
                 if (request.POST['headersa' + str(index)] != ""):
                     headers[request.POST['headersa' + str(index)]] = request.POST['headersb' + str(index)]
             print("before request")
-            api_response = requests.request(httpMethod, baseURL, headers=headers).json()
+            try:
+                api_response = requests.request(httpMethod, baseURL, headers=headers).json()
+            except:
+                #TODO this shouldn't be a 404.  it should redirect to a custom error page!
+                raise Http404
             print(api_response)
             pythonCode = generatePythonCode(baseURL, httpMethod, headers)
             contextAddition = {'baseURL': baseURL, 'httpMethod': httpMethod, 'headers': headers, 'apiResponse': api_response, 'pythonCode': pythonCode, 'headersa1': request.POST['headersa1'], 'headersb1': request.POST['headersb1'], 'headersa2': request.POST['headersa2'], 'headersb2': request.POST['headersb2'], 'headersa3': request.POST['headersa3'], 'headersb3': request.POST['headersb3']}
